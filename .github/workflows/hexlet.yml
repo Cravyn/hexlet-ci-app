@@ -3,18 +3,27 @@ on: push
 jobs:
   init:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
     steps:
       - uses: actions/checkout@v4
       
       - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
       - name: run setup
-        run: make setup
+        run: make install
+
+      - name: run lint
+        run: make lint
 
       - name: run test
         run: make test
 
-      - name: run lint
-        run: make lint
+      - uses: hexlet-components/hello-from-hexlet-action@release
